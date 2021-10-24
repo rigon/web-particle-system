@@ -70,8 +70,8 @@ function Particles(elemId, numberParticles, radius, force) {
                     let dist = p.distance(z.x, z.y);
                     if(dist < force && p !== z) {
                         let a = Math.atan2(p.y-z.y, z.x-p.x);
-                        xs -= (force - dist)/force * Math.cos(a);
-                        ys += (force - dist)/force * Math.sin(a);
+                        xs -= (force / Math.pow(dist, 2)) * Math.cos(a);
+                        ys -= (force / Math.pow(dist, 2)) * Math.sin(a);
                         putas += z.speed;
                     }
                 }
@@ -80,7 +80,7 @@ function Particles(elemId, numberParticles, radius, force) {
             let zx = Math.trunc(p.x/force);
             let zy = Math.trunc(p.y/force);
             let dx = (Math.round(p.x/force)-zx) * 2 - 1;    // -1 or 1
-            let dy = (Math.round(p.x/force)-zx) * 2 - 1;    // -1 or 1
+            let dy = (Math.round(p.y/force)-zy) * 2 - 1;    // -1 or 1
             // Only 4 zones influence the particle
             search_neighbourhood(zx, zy);
             search_neighbourhood(zx + dx, zy);
@@ -94,9 +94,10 @@ function Particles(elemId, numberParticles, radius, force) {
             //let heading = Math.asin(p.speed / hypotenuse * Math.sin(zangle));
             //Math.asin(p.speed / h * Math.sin(angle)) + heading;
             let heading = Math.atan2(py+ys, px+xs);
-            if(hypotenuse > putas + p.speed)
-                console.log("PUTAS");
+            if(hypotenuse > 10)
+                hypotenuse = 10;
 
+            p.pressure = Math.abs(hypotenuse - p.speed)*1000;
             p.temp_heading = heading;
             p.temp_speed = hypotenuse;
         }
@@ -111,8 +112,6 @@ function Particles(elemId, numberParticles, radius, force) {
 
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-        ctx.beginPath();
-        ctx.strokeStyle = "red";
         for(i=0; i<parts.length; i++) {
             let p = parts[i];
 
@@ -141,12 +140,14 @@ function Particles(elemId, numberParticles, radius, force) {
                 p.y = ctx.canvas.height;
             }
 
+            ctx.beginPath()
+            ctx.strokeStyle = "rgb(" + p.pressure + ",0," + (255-p.pressure) + ")";
             ctx.rect(p.x-5, p.y-5, 10, 10);
+
             ctx.moveTo(p.x, p.y);
             ctx.lineTo(p.x + p.speed * Math.cos(p.heading)*10, p.y - p.speed * Math.sin(p.heading)*10);
+            ctx.stroke();
         }
-
-        ctx.stroke();
     }
 
     this.press = function(event) {
@@ -195,7 +196,6 @@ function Particles(elemId, numberParticles, radius, force) {
                 let h = Math.sqrt(Math.pow(p.speed, 2) + Math.pow(magnitude, 2) - 2 * p.speed * magnitude * Math.cos(angle));
                 // Law of sines
                 let t = Math.asin(p.speed / h * Math.sin(angle)) + heading;
-                t = 0;
                 p.speed = h;
                 p.heading = t;
                 p.visited = true;
