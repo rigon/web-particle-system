@@ -94,10 +94,10 @@ function Particles(elemId, numberParticles, radius, force) {
             //let heading = Math.asin(p.speed / hypotenuse * Math.sin(zangle));
             //Math.asin(p.speed / h * Math.sin(angle)) + heading;
             let heading = Math.atan2(py+ys, px+xs);
-            if(hypotenuse > 10)
-                hypotenuse = 10;
+            if(hypotenuse > p.speed + 1)
+                hypotenuse = p.speed + 1;
 
-            p.pressure = Math.abs(hypotenuse - p.speed)*1000;
+            p.pressure = Math.abs(hypotenuse - p.speed)*100;
             p.temp_heading = heading;
             p.temp_speed = hypotenuse;
         }
@@ -141,7 +141,7 @@ function Particles(elemId, numberParticles, radius, force) {
             }
 
             ctx.beginPath()
-            ctx.strokeStyle = "rgb(" + p.pressure + ",0," + (255-p.pressure) + ")";
+            ctx.strokeStyle = "hsl(" + p.pressure + ", 100%, 50%)";
             ctx.rect(p.x-5, p.y-5, 10, 10);
 
             ctx.moveTo(p.x, p.y);
@@ -150,7 +150,7 @@ function Particles(elemId, numberParticles, radius, force) {
         }
     }
 
-    this.press = function(event) {
+    this.move = function(event) {
         if(previousMove == undefined) {
             previousMove = event;
             return;
@@ -207,9 +207,28 @@ function Particles(elemId, numberParticles, radius, force) {
 
         previousMove = event;
     }
+    
+    this.press = function(event) {
+        var x = event.clientX;
+        var y = event.clientY;
+
+
+        for(i=0; i<parts.length; i++) {
+            let p = parts[i];
+            let distance = p.distance(x,y);
+
+            if(distance < radius ) {
+                let magnitude = (radius - distance)*0.2;
+                let angle = Math.atan2(y-p.y, p.x-x);
+                p.speed = magnitude;
+                p.heading = angle;
+            }
+        }
+    }
 
     this.init();
-    elem.addEventListener("mousemove", this.press);
+    elem.addEventListener("click", this.press);
+    elem.addEventListener("mousemove", this.move);
     
     setInterval(this.draw, 1000/60);
     this.draw();
