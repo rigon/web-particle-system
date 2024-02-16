@@ -56,7 +56,6 @@ function Particles(elemId, numberParticles, radius, force) {
 
             let xs = 0;
             let ys = 0;
-            let putas = 0;
             
             function search_neighbourhood(ix, iy) {
                 if(zones[ix] == undefined)
@@ -72,7 +71,6 @@ function Particles(elemId, numberParticles, radius, force) {
                         let a = Math.atan2(p.y-z.y, z.x-p.x);
                         xs -= (force / Math.pow(dist, 2)) * Math.cos(a);
                         ys -= (force / Math.pow(dist, 2)) * Math.sin(a);
-                        putas += z.speed;
                     }
                 }
             }
