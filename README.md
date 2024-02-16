@@ -10,6 +10,8 @@ The script targets to updated at 60fps. In each frame, the vectors of all partic
 
 For efficient neighbor search, the [space is partitioned](https://en.wikipedia.org/wiki/Space_partitioning#In_computer_graphics) is split in a grid of zones and each particle is assigned to one. Then we just have to look for particles in the adjacent zones to the particle.
 
+Despite the resemblance of final result with actual water, it is still far away from good simulation. Other algorithms should be used.
+
 ## Interaction
 - Mouse Move: it calculates the speed and heading based on the mouse movement and updates the particles accordingly. The bigger the movement, the bigger is the force applied to the particles.
 - Mouse Click: simulates the effect of throwing a rock in the water, affecting particles within the specified interaction radius.
