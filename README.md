@@ -8,7 +8,7 @@ Each particle is represented by a square and a line. The square is the particle 
 
 The script targets to updated at 60fps. In each frame, the vectors of all particles are recalculated. Each particle exercises small repelling force on the nearby particles and the resulting vector is calculated after summing all interactions.
 
-For efficient neighbor search, the [space is partitioned](https://en.wikipedia.org/wiki/Space_partitioning#In_computer_graphics) is split in a grid of zones and each particle is assigned to one. Then we just have to look for particles in the adjacent zones to the particle.
+For efficient neighbor search, the [space is partitioned](https://en.wikipedia.org/wiki/Space_partitioning#In_computer_graphics) in a grid of zones and each particle is assigned to one. Then we just have to look for particles in the adjacent zones to the particle.
 
 Despite the resemblance of final result with actual water, it is still far away from good simulation. Other algorithms should be used.
 
